@@ -1,0 +1,25 @@
+// 04-symbols：static / field / this / method
+class Counter {
+    static int total;
+    field int count;
+
+    method void reset() {
+        let count = 0;
+        let total = 0;
+        return;
+    }
+
+    method int bump() {
+        let count = count + 1;
+        let total = total + 1;
+        return count;
+    }
+
+    method Counter self() {
+        return this;
+    }
+
+    function int grandTotal() {
+        return total;
+    }
+}

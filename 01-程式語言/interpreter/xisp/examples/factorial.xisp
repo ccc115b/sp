@@ -1,0 +1,10 @@
+; 階乘
+fn fact n
+  if lt n 2 _lt
+    1
+    mul n fact sub n 1 _sub _fact _mul
+  _if
+_fn
+
+fact 5 _fact
+fact 20 _fact

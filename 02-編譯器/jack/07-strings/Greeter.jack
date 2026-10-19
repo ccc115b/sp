@@ -1,0 +1,15 @@
+// 07-strings：字串常數的編譯
+class Greeter {
+    function int run() {
+        var String s;
+        let s = "Hi!";
+        do Output.printString(s);
+        return 0;
+    }
+
+    function void empty() {
+        var String s;
+        let s = "";
+        return;
+    }
+}

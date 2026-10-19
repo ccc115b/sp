@@ -1,0 +1,6 @@
+function Hello.main 0
+push constant 0
+return
+function Hello.answer 0
+push constant 42
+return

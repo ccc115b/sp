@@ -1,0 +1,29 @@
+function Shape.new 0
+push constant 2
+call Memory.alloc 1
+pop pointer 0
+push constant 1
+push constant 2
+call Point.new 2
+pop this 0
+push constant 3
+push constant 4
+call Point.new 2
+pop this 1
+push pointer 0
+return
+function Shape.total 0
+push argument 0
+pop pointer 0
+push this 0
+call Point.sum 1
+push this 1
+call Point.sum 1
+add
+return
+function Shape.test 1
+call Shape.new 0
+pop local 0
+push local 0
+call Shape.total 1
+return

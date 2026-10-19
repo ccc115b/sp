@@ -1,0 +1,20 @@
+class Errors {
+  field int total;
+
+  method int run() {
+    var int n;
+    let n = 1;
+    let n = missing + 1;
+    let n = ;
+    let n = 2 @ 3;
+    do Output.printInt(n)
+    let total = n;
+    var int after;
+    return total;
+  }
+
+  method int ok() {
+    let total = 0;
+    return total;
+  }
+}

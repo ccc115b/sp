@@ -1,0 +1,25 @@
+// 05-calls：function / method 呼叫與 do
+class Math {
+    function int square(int n) {
+        return n * n;
+    }
+
+    function void print(int v) {
+        return;
+    }
+
+    function int run(int a, int b) {
+        var int r;
+        let r = Math.square(a) + Math.square(b);
+        do Math.print(r);
+        return r;
+    }
+
+    method int twice(int n) {
+        return double(n);
+    }
+
+    method int double(int n) {
+        return n + n;
+    }
+}

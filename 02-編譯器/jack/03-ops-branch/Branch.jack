@@ -1,0 +1,37 @@
+// 03-ops-branch：比較、位元運算、布林常數與 if / while
+class Branch {
+    function int max(int a, int b) {
+        var int m;
+        if (a > b) {
+            let m = a;
+        } else {
+            let m = b;
+        }
+        return m;
+    }
+
+    function int sum(int n) {
+        var int i;
+        var int s;
+        let i = 0;
+        let s = 0;
+        while (i < n) {
+            let s = s + i;
+            let i = i + 1;
+        }
+        return s;
+    }
+
+    function int mask(int a, int b) {
+        var int r;
+        let r = (a & ~b) | (a = b);
+        return r;
+    }
+
+    function boolean isZero(int a) {
+        if (a = 0) {
+            return true;
+        }
+        return false;
+    }
+}

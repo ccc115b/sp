@@ -1,0 +1,54 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Sys.jack
+
+/**
+ * A library of basic system services.
+ */
+class Sys {
+
+    /** Performs all the initializations required by the OS. */
+    function void init() {
+        // 原始參考解答把 Memory.init() 排在最後，但它前面的 Math.init()、
+        // Output.init() 都會用 Array.new() 配置記憶體，此時堆積尚未初始化，
+        // Memory.alloc() 會回傳錯誤位址（1），整個 OS 就崩潰。原註解也自相
+        // 矛盾。這裡改成 Memory.init() 最先（與多數可用的解答一致）。
+        do Memory.init();
+        do Math.init();
+        do Screen.init();
+        do Output.init();
+        do Keyboard.init();
+        do Main.main();
+        do Sys.halt();
+        return;
+    }
+
+    /** Halts execution. */
+    function void halt() {
+        while(true){}
+        return;
+    }
+
+    /** Waits approximately duration milliseconds and then returns. */
+    function void wait(int duration) {
+        var int i, j;
+        let i = 0;
+        while( i < duration ) {
+            let j = 0;
+            while( j < 200 ) {
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+
+    /** Prints the given error code in the form "ERR<errorCode>", and halts. */
+    function void error(int errorCode) {
+        do Output.printString("Err");
+        do Output.printInt(errorCode);
+        do Sys.halt();
+        return;
+    }
+}

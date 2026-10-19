@@ -1,0 +1,10 @@
+// 01-hello-jack 的測試程式
+class Hello {
+    function void main() {
+        return;
+    }
+
+    function int answer() {
+        return 42;
+    }
+}

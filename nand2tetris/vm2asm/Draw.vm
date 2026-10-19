@@ -1,0 +1,65 @@
+// 在螢幕左上角畫 3 列 x 3 word 的黑塊。
+// 列數與欄數都用 div 算出來（(-9)/(-3)、(-96)/(-32) 順便測負數除法），
+// 位址用 mul 算（row*32）。
+
+function Sys.init 0
+call Main.draw 0
+push constant 0
+return
+
+function Main.draw 4
+push constant 9
+neg
+push constant 3
+neg
+div
+pop local 2
+push constant 96
+neg
+push constant 32
+neg
+div
+pop local 3
+push constant 0
+pop local 0
+label ROW_LOOP
+push local 0
+push local 2
+lt
+if-goto ROW_BODY
+goto ROW_END
+label ROW_BODY
+push constant 0
+pop local 1
+label COL_LOOP
+push local 1
+push local 3
+lt
+if-goto COL_BODY
+goto COL_END
+label COL_BODY
+push constant 16384
+push local 0
+push constant 32
+mul
+add
+push local 1
+add
+pop pointer 1
+push constant 0
+not
+pop that 0
+push local 1
+push constant 1
+add
+pop local 1
+goto COL_LOOP
+label COL_END
+push local 0
+push constant 1
+add
+pop local 0
+goto ROW_LOOP
+label ROW_END
+push constant 0
+return

@@ -1,0 +1,10 @@
+// 02-let-expr：區域變數、賦值與算術運算
+class Calc {
+    function int calc(int w, int h) {
+        var int a;
+        var int b;
+        let a = w * h;
+        let b = (a + w) / -h;
+        return b - a;
+    }
+}

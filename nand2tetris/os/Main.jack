@@ -1,0 +1,9 @@
+// 示範用的使用者程式。Sys.init 會初始化整個 OS 後呼叫 Main.main。
+// 這裡只用到 Screen：把螢幕最上面 16 列填滿。
+class Main {
+    function void main() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(0, 0, 63, 15);
+        return;
+    }
+}

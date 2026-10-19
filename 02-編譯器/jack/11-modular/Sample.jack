@@ -1,0 +1,22 @@
+class Sample {
+  static int calls;
+  field int value;
+
+  constructor Sample new(int init) {
+    let value = init;
+    let calls = calls + 1;
+    return this;
+  }
+
+  method int bump(int step) {
+    let value = value + step;
+    return value;
+  }
+
+  method void show() {
+    do Output.printString("value=");
+    do Output.printInt(value);
+    do Output.println();
+    return;
+  }
+}

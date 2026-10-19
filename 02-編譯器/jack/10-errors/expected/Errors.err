@@ -1,0 +1,19 @@
+Errors.jack:7:13: error: 變數 missing 未宣告
+        let n = missing + 1;
+                ^
+Errors.jack:8:13: error: 預期算式但遇到 ';'
+        let n = ;
+                ^
+Errors.jack:9:15: error: 無法辨識的字元 '@'
+        let n = 2 @ 3;
+                  ^
+Errors.jack:9:17: error: 預期 ';' 但遇到 整數 3
+        let n = 2 @ 3;
+                    ^
+Errors.jack:11:5: error: 預期 ';' 但遇到 關鍵字 'let'
+        let total = n;
+        ^
+Errors.jack:12:5: error: var 宣告必須寫在所有陳述之前
+        var int after;
+        ^
+共 6 個錯誤

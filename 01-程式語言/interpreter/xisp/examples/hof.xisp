@@ -1,0 +1,12 @@
+; 高階函式：用 call 呼叫函式參數
+fn twice f x
+  call f call f x _call _call
+_fn
+
+twice lambda n mul n n _mul _lambda 3 _twice
+
+reduce
+  lambda a b add a b _add _lambda
+  0
+  range 1 100 _range
+_reduce

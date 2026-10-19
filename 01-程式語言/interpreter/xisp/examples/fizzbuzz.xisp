@@ -1,0 +1,17 @@
+; FizzBuzz
+for i 1 15
+  cond
+    when eq mod i 15 _mod 0 _eq
+      print "FizzBuzz" _print
+    _when
+    when eq mod i 3 _mod 0 _eq
+      print "Fizz" _print
+    _when
+    when eq mod i 5 _mod 0 _eq
+      print "Buzz" _print
+    _when
+    else
+      print i _print
+    _else
+  _cond
+_for

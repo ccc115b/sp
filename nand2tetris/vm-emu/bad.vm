@@ -1,0 +1,5 @@
+// 故意寫錯的 VM 檔：constant 不能當作 pop 的目的地
+function bad 0
+push constant 1
+pop constant 0
+return

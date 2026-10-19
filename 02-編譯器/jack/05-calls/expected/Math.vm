@@ -1,0 +1,34 @@
+function Math.square 0
+push argument 0
+push argument 0
+mul
+return
+function Math.print 0
+push constant 0
+return
+function Math.run 1
+push argument 0
+call Math.square 1
+push argument 1
+call Math.square 1
+add
+pop local 0
+push local 0
+call Math.print 1
+pop temp 0
+push local 0
+return
+function Math.twice 0
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+call Math.double 2
+return
+function Math.double 0
+push argument 0
+pop pointer 0
+push argument 1
+push argument 1
+add
+return

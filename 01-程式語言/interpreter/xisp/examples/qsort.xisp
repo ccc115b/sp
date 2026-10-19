@@ -1,0 +1,17 @@
+; 快速排序
+fn qsort xs
+  if null xs _null
+    list _list
+    let p car xs _car
+        rest cdr xs _cdr
+    in
+      append
+        qsort filter lambda x lt x p _lt _lambda rest _filter _qsort
+        list p _list
+        qsort filter lambda x ge x p _ge _lambda rest _filter _qsort
+      _append
+    _let
+  _if
+_fn
+
+qsort list 3 1 4 1 5 9 2 6 _list _qsort

@@ -1,0 +1,9 @@
+; let 區域變數（依序綁定）
+let x 10
+    y 20
+in
+  mul
+    add x y _add
+    2
+  _mul
+_let

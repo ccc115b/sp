@@ -1,0 +1,16 @@
+function Calc.calc 2
+push argument 0
+push argument 1
+mul
+pop local 0
+push local 0
+push argument 0
+add
+push argument 1
+neg
+div
+pop local 1
+push local 1
+push local 0
+sub
+return

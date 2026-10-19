@@ -1,0 +1,15 @@
+// 09-multi-file：專案檔案之一
+class Point {
+    field int x;
+    field int y;
+
+    constructor Point new(int px, int py) {
+        let x = px;
+        let y = py;
+        return this;
+    }
+
+    method int sum() {
+        return x + y;
+    }
+}

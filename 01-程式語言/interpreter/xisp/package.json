@@ -1,0 +1,8 @@
+{
+  "name": "xisp",
+  "version": "0.1.0",
+  "description": "xisp：用 tag ... _tag 取代括號的 Lisp",
+  "bin": { "xisp": "xisp.js" },
+  "scripts": { "test": "node test/run.js", "example": "node xisp.js examples/factorial.xisp" },
+  "license": "MIT"
+}

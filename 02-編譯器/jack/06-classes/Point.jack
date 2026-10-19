@@ -1,0 +1,36 @@
+// 06-classes：constructor 與物件的建立、方法呼叫
+class Point {
+    field int x;
+    field int y;
+
+    constructor Point new(int px, int py) {
+        let x = px;
+        let y = py;
+        return this;
+    }
+
+    method int getX() {
+        return x;
+    }
+
+    method int getY() {
+        return y;
+    }
+
+    method void shift(int dx, int dy) {
+        let x = x + dx;
+        let y = y + dy;
+        return;
+    }
+
+    function Point origin() {
+        return Point.new(0, 0);
+    }
+
+    function int test() {
+        var Point p;
+        let p = Point.new(3, 4);
+        do p.shift(1, 2);
+        return p.getX() + p.getY();
+    }
+}

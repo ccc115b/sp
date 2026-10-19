@@ -1,0 +1,12 @@
+; 串列加總
+fn sum xs
+  if null xs _null
+    0
+    add
+      car xs _car
+      sum cdr xs _cdr _sum
+    _add
+  _if
+_fn
+
+sum list 1 2 3 4 5 _list _sum

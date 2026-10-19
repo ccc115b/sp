@@ -1,0 +1,21 @@
+// 09-multi-file：專案檔案之二，會呼叫 Point
+class Shape {
+    field Point a;
+    field Point b;
+
+    constructor Shape new() {
+        let a = Point.new(1, 2);
+        let b = Point.new(3, 4);
+        return this;
+    }
+
+    method int total() {
+        return a.sum() + b.sum();
+    }
+
+    function int test() {
+        var Shape s;
+        let s = Shape.new();
+        return s.total();
+    }
+}

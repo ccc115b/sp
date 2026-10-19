@@ -1,0 +1,3 @@
+; 字串與 print（def 也要有結束標籤 _def）
+def name "xisp" _def
+print str "Hello, " name "!" _str _print

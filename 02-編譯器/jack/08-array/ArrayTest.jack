@@ -1,0 +1,24 @@
+// 08-arrays：陣列的讀取與寫入
+class ArrayTest {
+    function int sum(Array a, int n) {
+        var int i;
+        var int s;
+        let i = 0;
+        let s = 0;
+        while (i < n) {
+            let s = s + a[i];
+            let i = i + 1;
+        }
+        return s;
+    }
+
+    function void fill(Array a, int n, int v) {
+        var int i;
+        let i = 0;
+        while (i < n) {
+            let a[i] = v;
+            let i = i + 1;
+        }
+        return;
+    }
+}

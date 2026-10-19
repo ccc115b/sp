@@ -1,0 +1,9 @@
+; 最大公因數（輾轉相除法）
+fn gcd a b
+  if eq b 0 _eq
+    a
+    gcd b mod a b _mod _gcd
+  _if
+_fn
+
+gcd 48 18 _gcd

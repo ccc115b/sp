@@ -1,0 +1,15 @@
+; 費氏數列
+fn fib n
+  if lt n 2 _lt
+    n
+    add
+      fib sub n 1 _sub _fib
+      fib sub n 2 _sub _fib
+    _add
+  _if
+_fn
+
+map
+  lambda i fib i _fib _lambda
+  range 0 10 _range
+_map
