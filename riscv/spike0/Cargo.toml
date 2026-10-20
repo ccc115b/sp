@@ -1,0 +1,11 @@
+[package]
+name = "spike0"
+version = "0.1.0"
+edition = "2021"
+description = "A tiny spike-like RISC-V (RV64IMA, M-mode) simulator with built-in pk-style syscalls"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3
+lto = true

@@ -1,0 +1,4 @@
+argc=3
+argv[1]=alpha
+argv[2]=42
+len(alpha)=5 len(42)=2

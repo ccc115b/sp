@@ -1,0 +1,19 @@
+[package]
+name = "jvm0"
+version = "0.1.0"
+edition = "2021"
+description = "A tiny JVM written in Rust that executes a subset of Java bytecode"
+
+[lib]
+name = "jvm0"
+path = "src/lib.rs"
+
+[[bin]]
+name = "jvm0"
+path = "src/main.rs"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3
+lto = true

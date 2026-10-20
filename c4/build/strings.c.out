@@ -1,0 +1,5 @@
+len=5 hello
+cmp eq=0 lt=-1 gt=111
+rev=gfedcba len=7
+cat=hello, world
+upper=HELLO, WORLD

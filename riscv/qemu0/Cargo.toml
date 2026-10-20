@@ -1,0 +1,11 @@
+[package]
+name = "qemu0"
+version = "0.1.0"
+edition = "2021"
+description = "A tiny RISC-V (RV64IMA, M-mode) emulator written in Rust"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3
+lto = true
