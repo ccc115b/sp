@@ -2,7 +2,19 @@
 name = "qemu0"
 version = "0.1.0"
 edition = "2021"
-description = "A tiny RISC-V (RV64IMA, M-mode) emulator written in Rust"
+description = "qemu0 (bare-metal RV64IMA emulator) and spike0 (pk-like user-mode runner)"
+
+[lib]
+name = "rvcore"
+path = "src/lib.rs"
+
+[[bin]]
+name = "qemu0"
+path = "src/main.rs"
+
+[[bin]]
+name = "spike0"
+path = "src/bin/spike0.rs"
 
 [dependencies]
 

@@ -1,6 +1,6 @@
-# riscv64-unknown-elf-gcc -march=rv64ima -mabi=lp64 -nostdlib -static \
-#     -Wl,-Ttext=0x80000000 -o hello.elf hello.S
-# qemu0 hello.elf
+# 最簡單:./hello.sh(會組譯、連結並用 qemu0 執行)
+# 手動:riscv64-unknown-elf-gcc -march=rv64ima -mabi=lp64 -nostdlib -static \
+#         -T build/qemu0.ld -o hello hello.S  &&  qemu0 hello
     .section .text
     .globl _start
 _start:

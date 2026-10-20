@@ -1,12 +1,8 @@
 //! qemu0 — 一個用 Rust 寫的微型 RISC-V (RV64IMA, M-mode) 模擬器。
 
-mod bus;
-mod cpu;
-mod demo;
-mod elf;
-
-use bus::DRAM_BASE;
-use cpu::Cpu;
+use rvcore::bus::DRAM_BASE;
+use rvcore::cpu::Cpu;
+use rvcore::{demo, elf};
 use std::process::exit;
 
 const USAGE: &str = "\
@@ -89,7 +85,7 @@ fn die(msg: &str) -> ! {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use demo::*;
+    use rvcore::demo::*;
 
     fn machine(words: &[u32]) -> Cpu {
         let mut cpu = Cpu::new(1 << 20, false);

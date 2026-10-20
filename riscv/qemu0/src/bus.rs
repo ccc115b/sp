@@ -86,6 +86,8 @@ impl Clint {
 
 pub struct Bus {
     pub dram: Vec<u8>,
+    /// DRAM 起始位址。qemu0 固定 0x8000_0000;spike0 依 ELF 的 vaddr 動態決定。
+    pub dram_base: u64,
     pub uart: Uart,
     pub clint: Clint,
     /// 由 test finisher 設定;主迴圈看到就結束模擬。
@@ -94,8 +96,13 @@ pub struct Bus {
 
 impl Bus {
     pub fn new(mem_bytes: usize, echo: bool) -> Self {
+        Self::with_base(DRAM_BASE, mem_bytes, echo)
+    }
+
+    pub fn with_base(base: u64, mem_bytes: usize, echo: bool) -> Self {
         Bus {
             dram: vec![0; mem_bytes],
+            dram_base: base,
             uart: Uart { echo, captured: Vec::new() },
             clint: Clint { msip: 0, mtimecmp: u64::MAX, mtime: 0 },
             exit: None,
@@ -105,20 +112,31 @@ impl Bus {
     /// 把映像檔內容複製進 DRAM。
     pub fn load_image(&mut self, addr: u64, data: &[u8]) -> Result<(), String> {
         let end = addr.checked_add(data.len() as u64).ok_or("位址溢位")?;
-        if addr < DRAM_BASE || end > DRAM_BASE + self.dram.len() as u64 {
+        if addr < self.dram_base || end > self.dram_base + self.dram.len() as u64 {
             return Err(format!(
                 "映像檔 [{:#x}, {:#x}) 超出 DRAM 範圍,請用 -m 增加記憶體",
                 addr, end
             ));
         }
-        let off = (addr - DRAM_BASE) as usize;
+        let off = (addr - self.dram_base) as usize;
         self.dram[off..off + data.len()].copy_from_slice(data);
         Ok(())
     }
 
+    /// 以 guest 位址取得 DRAM 內的唯讀位元組區段(user-mode 模擬用)。
+    pub fn slice(&self, addr: u64, len: usize) -> Option<&[u8]> {
+        let off = addr.checked_sub(self.dram_base)? as usize;
+        self.dram.get(off..off.checked_add(len)?)
+    }
+
+    pub fn slice_mut(&mut self, addr: u64, len: usize) -> Option<&mut [u8]> {
+        let off = addr.checked_sub(self.dram_base)? as usize;
+        self.dram.get_mut(off..off.checked_add(len)?)
+    }
+
     pub fn load(&mut self, addr: u64, size: u64) -> Option<u64> {
-        if addr >= DRAM_BASE {
-            let off = (addr - DRAM_BASE) as usize;
+        if addr >= self.dram_base {
+            let off = (addr - self.dram_base) as usize;
             let end = off.checked_add(size as usize)?;
             if end > self.dram.len() {
                 return None;
@@ -142,8 +160,8 @@ impl Bus {
     }
 
     pub fn store(&mut self, addr: u64, size: u64, val: u64) -> Option<()> {
-        if addr >= DRAM_BASE {
-            let off = (addr - DRAM_BASE) as usize;
+        if addr >= self.dram_base {
+            let off = (addr - self.dram_base) as usize;
             let end = off.checked_add(size as usize)?;
             if end > self.dram.len() {
                 return None;
