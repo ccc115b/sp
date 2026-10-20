@@ -1,0 +1,72 @@
+// 泡沫排序 + 質數篩 + Math 函式
+class Main {
+    function void swap(Array a, int i, int j) {
+        var int t;
+        let t = a[i];
+        let a[i] = a[j];
+        let a[j] = t;
+        return;
+    }
+
+    function void bubble(Array a, int n) {
+        var int i, j;
+        let i = 0;
+        while (i < n) {
+            let j = 0;
+            while (j < (n - 1 - i)) {
+                if (a[j] > a[j + 1]) { do Main.swap(a, j, j + 1); }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+
+    function void printArray(Array a, int n) {
+        var int i;
+        let i = 0;
+        while (i < n) {
+            do Output.printInt(a[i]);
+            do Output.printChar(32);
+            let i = i + 1;
+        }
+        do Output.println();
+        return;
+    }
+
+    function void main() {
+        var Array a, sieve;
+        var int n, i, j;
+
+        let n = 10;
+        let a = Array.new(n);
+        let i = 0;
+        while (i < n) {
+            let a[i] = (i * 7 + 3) - ((i * 7 + 3) / 10 * 10);   // 偽隨機 0..9
+            let i = i + 1;
+        }
+        do Output.printString("before: "); do Main.printArray(a, n);
+        do Main.bubble(a, n);
+        do Output.printString("after:  "); do Main.printArray(a, n);
+        do a.dispose();
+
+        // 質數篩 < 50
+        let sieve = Array.new(50);
+        let i = 2;
+        while (i < 50) {
+            if (sieve[i] = 0) {
+                do Output.printInt(i); do Output.printChar(32);
+                let j = i * 2;
+                while (j < 50) { let sieve[j] = 1; let j = j + i; }
+            }
+            let i = i + 1;
+        }
+        do Output.println();
+
+        do Output.printString("sqrt(1000)="); do Output.printInt(Math.sqrt(1000));
+        do Output.printString(" max(3,9)="); do Output.printInt(Math.max(3, 9));
+        do Output.printString(" abs(-42)="); do Output.printInt(Math.abs(-42));
+        do Output.println();
+        return;
+    }
+}

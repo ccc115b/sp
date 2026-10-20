@@ -1,0 +1,36 @@
+class Main {
+    function void main() {
+        var Point a, b, c;
+        var String s;
+        var boolean ok;
+
+        let a = Point.new(3, 4);
+        let b = Point.new(10, -2);
+        let c = a.plus(b);
+
+        do Output.printString("a = "); do a.print(); do Output.println();
+        do Output.printString("b = "); do b.print(); do Output.println();
+        do Output.printString("a + b = "); do c.print(); do Output.println();
+        do Output.printString("distSq(a,b) = "); do Output.printInt(a.distSq(b)); do Output.println();
+        do Output.printString("points created: "); do Output.printInt(Point.getCount()); do Output.println();
+
+        // 布林:true = -1, false = 0,可以用 ~ & |
+        let ok = (a.getX() < b.getX()) & ~(a.getY() > b.getY());
+        if (ok) { do Output.printString("ok is true"); } else { do Output.printString("ok is false"); }
+        do Output.println();
+
+        // null 比較
+        let c = null;
+        if (c = null) { do Output.printString("c is null"); do Output.println(); }
+
+        // 可變字串
+        let s = String.new(20);
+        do s.appendChar(74); do s.appendChar(97); do s.appendChar(99); do s.appendChar(107);
+        do Output.printString(s); do Output.printString(" len="); do Output.printInt(s.length());
+        do Output.println();
+
+        do a.dispose();
+        do b.dispose();
+        return;
+    }
+}

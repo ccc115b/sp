@@ -1,0 +1,41 @@
+class Point {
+    field int x, y;
+    static int count;
+
+    constructor Point new(int ax, int ay) {
+        let x = ax;
+        let y = ay;
+        let count = count + 1;
+        return this;
+    }
+
+    method int getX() { return x; }
+    method int getY() { return y; }
+
+    method Point plus(Point other) {
+        return Point.new(x + other.getX(), y + other.getY());
+    }
+
+    method int distSq(Point other) {
+        var int dx, dy;
+        let dx = x - other.getX();
+        let dy = y - other.getY();
+        return (dx * dx) + (dy * dy);
+    }
+
+    method void print() {
+        do Output.printChar(40);   // (
+        do Output.printInt(x);
+        do Output.printChar(44);   // ,
+        do Output.printInt(y);
+        do Output.printChar(41);   // )
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    function int getCount() { return count; }
+}

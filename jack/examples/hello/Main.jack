@@ -1,0 +1,23 @@
+// 最簡單的程式:印字串、遞迴、迴圈
+class Main {
+    function int fib(int n) {
+        if (n < 2) { return n; }
+        return Main.fib(n - 1) + Main.fib(n - 2);
+    }
+
+    function void main() {
+        var int i;
+        do Output.printString("Hello from Jack on the JVM!");
+        do Output.println();
+        let i = 0;
+        while (i < 15) {
+            do Output.printString("fib(");
+            do Output.printInt(i);
+            do Output.printString(") = ");
+            do Output.printInt(Main.fib(i));
+            do Output.println();
+            let i = i + 1;
+        }
+        return;
+    }
+}
