@@ -1,0 +1,11 @@
+[package]
+name = "jackc"
+version = "0.1.0"
+edition = "2021"
+description = "Jack (nand2tetris) -> JVM bytecode compiler, Rust port of java/src/jackc/JackCompiler.java"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3
+lto = true

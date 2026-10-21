@@ -1,0 +1,10 @@
+[package]
+name = "ll2rv"
+version = "0.1.0"
+edition = "2021"
+description = "A small LLVM IR (.ll) to RISC-V 64 assembly (.s) translator"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3
