@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RISC-V 虛擬開發板</title>
+<link rel="stylesheet" href="style.css">
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--fg:#1a1d23;--mut:#6b7280;--bd:#d9dce3;--ac:#2563eb;--hi:#22c55e}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#181b21;--fg:#e8eaee;--mut:#8b93a1;--bd:#2c313a;--ac:#6d9bff;--hi:#34d399;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1115;--card:#181b21;--fg:#e8eaee;--mut:#8b93a1;--bd:#2c313a;--ac:#6d9bff;--hi:#34d399;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Noto Sans TC",sans-serif;padding:12px}
+h1{font-size:18px;margin:0 0 4px}.sub{color:var(--mut);font-size:13px;margin-bottom:12px}
+.wrap{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:12px;max-width:1100px;margin:auto}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:12px}
+.hdr{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;max-width:250px;margin:auto}
+.p{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mut)}.p:nth-child(even){flex-direction:row-reverse}
+.p i{width:14px;height:14px;border-radius:50%;border:2px solid var(--bd);flex:none}
+.p[data-g]{color:var(--fg);cursor:pointer}.p[data-g] i{border-color:var(--mut)}
+.p.hi i{background:var(--hi);border-color:var(--hi)}.p.in i{border-color:var(--ac)}.p.in.hi i{background:var(--ac)}
+.parts{display:flex;gap:14px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.led{width:30px;height:30px;border-radius:50%;background:var(--bd)}.led.on{box-shadow:0 0 14px 4px var(--c);background:var(--c)}
+.btn{width:38px;height:38px;border-radius:8px;border:2px solid var(--bd);background:var(--bg);color:var(--fg);touch-action:none;cursor:pointer}.btn.dn{background:var(--ac);color:#fff}
+.part{text-align:center;font-size:11px;color:var(--mut)}
+textarea#code{opacity:.95;width:100%;height:210px;font:13px/1.5 ui-monospace,Menlo,monospace;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:8px;resize:vertical}
+.row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:center}
+select,button.a{font:inherit;padding:6px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--fg)}button.go{background:var(--ac);color:#fff;border-color:var(--ac)}
+#term_container{overflow:auto;max-width:100%}#term_paste{width:90px;height:19px}.tag{font-size:12px;color:var(--mut)}
+</style></head><body>
+<h1>RISC-V 虛擬開發板</h1>
+<div class="sub">瀏覽器內的 RISC-V Linux（TinyEMU），GPIO 編號對應樹莓派 40 pin。<span id="st" class="tag">｜狀態：載入中…</span></div>
+<div class="wrap">
+ <div><div class="card"><div class="hdr" id="hdr"></div><div class="parts" id="parts"></div></div>
+  <div class="card tag">範例是預先編譯進映像的 C 程式（<code>/bin/c_*</code>），網頁上的原始碼為唯讀。想改程式：編輯 <code>src/</code> 後執行 <code>./build.sh</code>。</div></div>
+ <div>
+  <div class="card">
+   <div class="row"><select id="ex"></select><button class="a go" id="run">▶ 執行</button><button class="a" id="stop">■ 停止</button></div>
+   <textarea id="code" spellcheck="false" readonly></textarea>
+  </div>
+  <div class="card" id="term_wrap" style="display:none">
+   <div id="term_container"></div>
+   <textarea id="term_paste" cols="10" rows="1" autocorrect="off">Paste Here</textarea>
+   <progress id="net_progress" hidden></progress>
+  </div>
+ </div>
+</div>
+<script>if(!location.search)history.replaceState(null,'','?cols=64&rows=14&font_size=13')</script>
+<script src="term.js"></script>
+<script src="jslinux.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const EX={"1 閃爍 LED": ["blink", "#include \"vgpio.h\"\nint main(void) {\n    gpio_mode(17, 1);\n    for (;;) {\n        gpio_set(17, 1); msleep(500);\n        gpio_set(17, 0); msleep(500);\n    }\n}\n"], "2 按鈕切換 LED": ["button", "/* 按下 GPIO24 的按鈕，切換 GPIO17 的 LED */\n#include \"vgpio.h\"\nint main(void) {\n    int last = 0, led = 0;\n    gpio_mode(24, 0);\n    gpio_mode(17, 1);\n    for (;;) {\n        int now = gpio_get(24);\n        if (now && !last) { led = !led; gpio_set(17, led); }\n        last = now;\n        msleep(20);\n    }\n}\n"], "3 紅綠燈": ["traffic", "#include \"vgpio.h\"\nint main(void) {\n    int red = 17, yellow = 27, green = 22;\n    gpio_mode(red, 1); gpio_mode(yellow, 1); gpio_mode(green, 1);\n    for (;;) {\n        gpio_set(green, 1);  msleep(2000); gpio_set(green, 0);\n        gpio_set(yellow, 1); msleep(800);  gpio_set(yellow, 0);\n        gpio_set(red, 1);    msleep(2000); gpio_set(red, 0);\n    }\n}\n"], "4 二進位計數器": ["counter", "#include \"vgpio.h\"\nint main(void) {\n    int pins[4] = {17, 27, 22, 23};\n    for (int b = 0; b < 4; b++) gpio_mode(pins[b], 1);\n    for (;;) {\n        for (int n = 0; n < 16; n++) {\n            for (int b = 0; b < 4; b++) gpio_set(pins[b], (n >> b) & 1);\n            msleep(300);\n        }\n    }\n}\n"], "5 SOS 摩斯電碼": ["sos", "#include \"vgpio.h\"\nint main(void) {\n    int d[9] = {200, 200, 200, 600, 600, 600, 200, 200, 200};\n    gpio_mode(17, 1);\n    for (;;) {\n        for (int i = 0; i < 9; i++) {\n            gpio_set(17, 1); msleep(d[i]);\n            gpio_set(17, 0); msleep(200);\n        }\n        msleep(1000);\n    }\n}\n"], "6 跑馬燈": ["knight", "#include \"vgpio.h\"\nint main(void) {\n    int pins[4] = {17, 27, 22, 23};\n    int seq[6] = {0, 1, 2, 3, 2, 1};\n    for (int b = 0; b < 4; b++) gpio_mode(pins[b], 1);\n    for (;;) {\n        for (int i = 0; i < 6; i++) {\n            gpio_set(pins[seq[i]], 1); msleep(120);\n            gpio_set(pins[seq[i]], 0);\n        }\n    }\n}\n"]};
+const S={out:0,dir:0,inp:0};
+function cmd(c){const a=c.split(' '),b=1<<+a[1];
+ if(a[0]==='o')S.out=a[2]==='1'?S.out|b:S.out&~b;
+ else if(a[0]==='d')S.dir=a[2]==='out'?S.dir|b:S.dir&~b;
+ else if(a[0]==='q')typeText(S.inp+'\n')}
+// 攔截終端輸出，抽出 ESC ] 7777 ; ... BEL（可能被切在兩段輸出之間）
+const MK='\x1b]7777;';let pend='';
+function filter(s){s=pend+s;pend='';
+ s=s.replace(/\x1b\]7777;([^\x07]*)\x07/g,(_,c)=>{cmd(c);return''});
+ const k=s.lastIndexOf('\x1b');
+ if(k>=0){const t=s.slice(k);if(t.length<MK.length?MK.startsWith(t):t.startsWith(MK)){pend=t;s=s.slice(0,k)}}
+ return s}
+// 輸入到 guest（console 佇列只有 1024 位元組，指令都很短）
+function typeText(t){for(let i=0;i<t.length;i++)console_write1(t.charCodeAt(i))}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+let q=Promise.resolve();
+const sendLines=L=>q=q.then(async()=>{for(const l of L){typeText(l+'\n');await wait(120)}});
+let ready=false;
+const w0=term.write.bind(term);
+term.write=s=>{const o=filter(s);if(o)w0(o);
+ if(!ready&&/~ # $/.test(o)){ready=true;$('st').textContent='｜狀態：Linux 已啟動，可以執行範例'}};
+function run(){if(!ready)return;
+ S.out=S.dir=0;term_handler('\x03');
+ sendLines(['stty -echo',"printf '\\033[2J\\033[H'; /bin/c_"+EX[$('ex').value][0]+"; stty echo"])}
+// ---- 介面 ----
+const names="3V3 5V 2 5V 3 GND 4 14 GND 15 17 18 27 GND 22 23 3V3 24 10 GND 9 25 11 8 GND 7 0 1 5 GND 6 12 13 GND 19 16 26 20 GND 21".split(' ');
+names.forEach(n=>{const d=document.createElement('div');d.className='p';const g=/^\d+$/.test(n);
+ if(g){d.dataset.g=n;d.title='GPIO'+n+'（輸入腳可點擊切換電位）';d.onclick=()=>{if(!(S.dir>>n&1))S.inp^=1<<n}}
+ d.innerHTML=`<i></i><span>${g?'GPIO'+n:n}</span>`;$('hdr').appendChild(d)});
+[[17,'#ef4444'],[27,'#eab308'],[22,'#22c55e'],[23,'#3b82f6']].forEach(([g,c])=>{
+ const d=document.createElement('div');d.className='part';d.innerHTML=`<div class="led" data-led="${g}" style="--c:${c}"></div>${g}`;$('parts').appendChild(d)});
+[24,25].forEach(g=>{const d=document.createElement('div');d.className='part';
+ d.innerHTML=`<button class="btn" data-btn="${g}">●</button><br>${g}`;const b=d.firstChild;
+ b.onpointerdown=()=>{b.classList.add('dn');S.inp|=1<<g};
+ const up=()=>{b.classList.remove('dn');S.inp&=~(1<<g)};b.onpointerup=b.onpointerleave=up;$('parts').appendChild(d)});
+Object.keys(EX).forEach(k=>$('ex').add(new Option(k,k)));
+$('ex').onchange=()=>$('code').value=EX[$('ex').value][1];$('code').value=EX[$('ex').value][1];
+$('run').onclick=run;$('stop').onclick=()=>term_handler('\x03');
+(function draw(){
+ document.querySelectorAll('.p[data-g]').forEach(e=>{const b=1<<e.dataset.g,o=S.dir&b;
+  e.classList.toggle('in',!o);e.classList.toggle('hi',!!((o?S.out:S.inp)&b))});
+ document.querySelectorAll('[data-led]').forEach(e=>e.classList.toggle('on',!!(S.dir&S.out&(1<<e.dataset.led))));
+ requestAnimationFrame(draw)})();
+</script></body></html>

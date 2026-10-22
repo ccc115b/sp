@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>RISC-V 虛擬開發板</title>
+    <style>
+        :root {
+            --bg: #f4f5f7;
+            --card: #fff;
+            --fg: #1a1d23;
+            --mut: #6b7280;
+            --bd: #d9dce3;
+            --ac: #2563eb;
+            --hi: #22c55e;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px)
+        }
+
+        @media (prefers-color-scheme:dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #0f1115;
+                --card: #181b21;
+                --fg: #e8eaee;
+                --mut: #8b93a1;
+                --bd: #2c313a;
+                --ac: #6d9bff;
+                --hi: #34d399;
+                color-scheme: dark
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #0f1115;
+            --card: #181b21;
+            --fg: #e8eaee;
+            --mut: #8b93a1;
+            --bd: #2c313a;
+            --ac: #6d9bff;
+            --hi: #34d399;
+            color-scheme: dark
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--fg);
+            font: 15px/1.5 system-ui, -apple-system, "Noto Sans TC", sans-serif;
+            padding: 12px
+        }
+
+        h1 {
+            font-size: 18px;
+            margin: 0 0 4px
+        }
+
+        .sub {
+            color: var(--mut);
+            font-size: 13px;
+            margin-bottom: 12px
+        }
+
+        .wrap {
+            display: grid;
+            grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+            gap: 12px;
+            max-width: 1000px;
+            margin: auto
+        }
+
+        @media(max-width:720px) {
+            .wrap {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--bd);
+            border-radius: 10px;
+            padding: 12px
+        }
+
+        .hdr {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 10px;
+            max-width: 260px;
+            margin: auto
+        }
+
+        .p {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--mut)
+        }
+
+        .p:nth-child(even) {
+            flex-direction: row-reverse
+        }
+
+        .p i {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid var(--bd);
+            flex: none
+        }
+
+        .p[data-g] {
+            color: var(--fg);
+            cursor: pointer
+        }
+
+        .p[data-g] i {
+            border-color: var(--mut)
+        }
+
+        .p.hi i {
+            background: var(--hi);
+            border-color: var(--hi)
+        }
+
+        .p.in i {
+            border-color: var(--ac)
+        }
+
+        .p.in.hi i {
+            background: var(--ac)
+        }
+
+        .parts {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            margin-top: 14px;
+            flex-wrap: wrap
+        }
+
+        .led {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--bd);
+            transition: .05s
+        }
+
+        .led.on {
+            box-shadow: 0 0 14px 4px var(--c);
+            background: var(--c)
+        }
+
+        .btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            border: 2px solid var(--bd);
+            background: var(--bg);
+            color: var(--fg);
+            touch-action: none;
+            cursor: pointer
+        }
+
+        .btn.dn {
+            background: var(--ac);
+            color: #fff
+        }
+
+        .part {
+            text-align: center;
+            font-size: 11px;
+            color: var(--mut)
+        }
+
+        textarea {
+            width: 100%;
+            height: 230px;
+            font: 13px/1.5 ui-monospace, Menlo, monospace;
+            background: var(--bg);
+            color: var(--fg);
+            border: 1px solid var(--bd);
+            border-radius: 8px;
+            padding: 8px;
+            resize: vertical
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap
+        }
+
+        select,
+        button.a {
+            font: inherit;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--bd);
+            background: var(--bg);
+            color: var(--fg)
+        }
+
+        button.go {
+            background: var(--ac);
+            color: #fff;
+            border-color: var(--ac)
+        }
+
+        #log {
+            margin-top: 8px;
+            font: 12px/1.4 ui-monospace, monospace;
+            color: var(--mut);
+            max-height: 90px;
+            overflow: auto;
+            white-space: pre-wrap
+        }
+
+        .tag {
+            font-size: 12px;
+            color: var(--mut)
+        }
+    </style>
+</head>
+
+<body>
+    <h1>RISC-V 虛擬開發板</h1>
+    <div class="sub">GPIO 編號對應樹莓派 40 pin 排針。<span id="mode" class="tag"></span></div>
+    <div class="wrap">
+        <div class="card">
+            <div class="hdr" id="hdr"></div>
+            <div class="parts" id="parts"></div>
+        </div>
+        <div class="card">
+            <div class="row"><select id="ex"></select><button class="a go" id="run">▶ 執行</button><button class="a"
+                    id="stop">■ 停止</button></div>
+            <textarea id="code" spellcheck="false"></textarea>
+            <div id="log"></div>
+        </div>
+    </div>
+    <script>
+        const EX = {
+            "1 閃爍 LED": `const led = Pin(17, 'out');
+while (true) {
+  led.value(1);
+  await sleep(500);
+  led.value(0);
+  await sleep(500);
+}`,
+            "2 按鈕切換 LED": `// 按下 GPIO24 的按鈕，切換 GPIO17 的 LED
+const btn = Pin(24, 'in');
+const led = Pin(17, 'out');
+let last = 0;
+while (true) {
+  const now = btn.value();
+  if (now && !last) led.value(!led.value());
+  last = now;
+  await sleep(20);
+}`,
+            "3 紅綠燈": `const red = Pin(17, 'out');
+const yellow = Pin(27, 'out');
+const green = Pin(22, 'out');
+while (true) {
+  green.value(1);
+  await sleep(2000);
+  green.value(0);
+  yellow.value(1);
+  await sleep(800);
+  yellow.value(0);
+  red.value(1);
+  await sleep(2000);
+  red.value(0);
+}`,
+            "4 二進位計數器": `const pins = [17, 27, 22, 23].map(n => Pin(n, 'out'));
+while (true) {
+  for (let n = 0; n < 16; n++) {
+    pins.forEach((p, b) => p.value((n >> b) & 1));
+    await sleep(300);
+  }
+}`,
+            "5 SOS 摩斯電碼": `const led = Pin(17, 'out');
+while (true) {
+  for (const d of [200, 200, 200, 600, 600, 600, 200, 200, 200]) {
+    led.value(1);
+    await sleep(d);
+    led.value(0);
+    await sleep(200);
+  }
+  await sleep(1000);
+}`,
+            "6 跑馬燈": `const pins = [17, 27, 22, 23].map(n => Pin(n, 'out'));
+while (true) {
+  for (const i of [0, 1, 2, 3, 2, 1]) {
+    pins[i].value(1);
+    await sleep(120);
+    pins[i].value(0);
+  }
+}`};
+
+        // ---- GPIO 狀態：與 C 裝置同樣的暫存器模型 (out / dir / inp) ----
+        const S = { out: 0, dir: 0, inp: 0 };
+        const real = () => window.Module && Module._vgpio_get_out;
+        const getState = () => real() ? { out: Module._vgpio_get_out(), dir: Module._vgpio_get_dir(), inp: S.inp } : S;
+        function setIn(m) { S.inp = m; if (real()) Module._vgpio_set_in(m) }
+
+        let token = 0;
+        const sleep = ms => { const id = token; return new Promise((r, j) => setTimeout(() => id === token ? r() : j('stop'), ms)) };
+        function Pin(n, mode) {
+            const b = 1 << n; if (mode === 'out') S.dir |= b; else S.dir &= ~b;
+            return { value(v) { if (v === undefined) return ((S.dir & b ? S.out : S.inp) & b) ? 1 : 0; S.out = v ? S.out | b : S.out & ~b; return v } }
+        }
+        const AF = Object.getPrototypeOf(async function () { }).constructor;
+        const log = t => { const l = document.getElementById('log'); l.textContent += t + '\n'; l.scrollTop = 1e9 };
+
+        async function run() {
+            stop(); const code = $('code').value;
+            if (real()) { window.vmSend(`cat > main.js <<'EOF'\nimport './vgpio.js';\n${code}\nEOF\nqjs -m main.js\n`); log('已送到 Linux 執行'); return }
+            S.out = S.dir = 0; const id = ++token; log('[demo] 執行中');
+            try { await new AF('Pin', 'sleep', code)(Pin, sleep) } catch (e) { if (e !== 'stop') log('錯誤：' + e) }
+            if (id === token) log('[demo] 結束')
+        }
+        function stop() { token++; if (real() && window.vmSend) window.vmSend('\x03') }
+
+        // ---- 介面 ----
+        const $ = id => document.getElementById(id);
+        const names = "3V3 5V 2 5V 3 GND 4 14 GND 15 17 18 27 GND 22 23 3V3 24 10 GND 9 25 11 8 GND 7 0 1 5 GND 6 12 13 GND 19 16 26 20 GND 21".split(' ');
+        names.forEach((n, i) => {
+            const d = document.createElement('div'); d.className = 'p';
+            if (/^\d+$/.test(n)) { d.dataset.g = n; d.title = 'GPIO' + n + '（點擊切換輸入電位）'; d.onclick = () => { if (!(S.dir >> n & 1)) setIn(S.inp ^ (1 << n)) } }
+            d.innerHTML = `<i></i><span>${/^\d+$/.test(n) ? 'GPIO' + n : n}</span>`; $('hdr').appendChild(d)
+        });
+        [[17, '#ef4444'], [27, '#eab308'], [22, '#22c55e'], [23, '#3b82f6']].forEach(([g, c]) => {
+            const d = document.createElement('div'); d.className = 'part'; d.innerHTML = `<div class="led" data-led="${g}" style="--c:${c}"></div>${g}`; $('parts').appendChild(d)
+        });
+        [24, 25].forEach(g => {
+            const d = document.createElement('div'); d.className = 'part';
+            d.innerHTML = `<button class="btn" data-btn="${g}">●</button><br>${g}`; const b = d.firstChild;
+            b.onpointerdown = () => { b.classList.add('dn'); setIn(S.inp | 1 << g) };
+            const up = () => { b.classList.remove('dn'); setIn(S.inp & ~(1 << g)) }; b.onpointerup = b.onpointerleave = up; $('parts').appendChild(d)
+        });
+        Object.keys(EX).forEach(k => $('ex').add(new Option(k, k)));
+        $('ex').onchange = () => $('code').value = EX[$('ex').value]; $('code').value = EX[$('ex').value];
+        $('run').onclick = run; $('stop').onclick = () => { stop(); log('已停止') };
+        document.querySelectorAll('[data-led]').forEach(e => e._g = +e.dataset.led);
+        (function draw() {
+            const s = getState();
+            document.querySelectorAll('.p[data-g]').forEach(e => {
+                const b = 1 << e.dataset.g, o = s.dir & b;
+                e.classList.toggle('in', !o); e.classList.toggle('hi', !!((o ? s.out : s.inp) & b))
+            });
+            document.querySelectorAll('[data-led]').forEach(e => e.classList.toggle('on', !!(s.dir & s.out & (1 << e._g))));
+            $('mode').textContent = real() ? '｜後端：TinyEMU（Linux 執行中）' : '｜後端：Demo 模式（以 JS 模擬，尚未接上 Linux）';
+            requestAnimationFrame(draw)
+        })();
+    </script>
+</body>
+
+</html>
