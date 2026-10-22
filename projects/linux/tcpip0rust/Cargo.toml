@@ -1,0 +1,12 @@
+[package]
+name = "tcpip0rust"
+version = "0.1.0"
+edition = "2021"
+
+# 只用 std：不依賴任何 crate（ioctl 直接 extern "C"），在 Docker 內可離線編譯
+[profile.release]
+debug = true
+lto = false
+
+[profile.dev]
+debug = true

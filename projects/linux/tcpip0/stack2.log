@@ -1,0 +1,22 @@
+[I] tcpip stack starting...
+[I] netdev up: tap=tap0 ip=10.0.0.2/24 mac=52:05:c2:99:01:42, netmask=0xffffff00
+[D] arp send op=1 spa=10.0.0.2 tpa=10.0.0.1
+[W] tcp: ip_send queued (等待 ARP resolve)
+[D] tcp >>> :40000 -> 10.0.0.1:7000 flags=S seq=2641066920 ack=0 len=0 state=SYN_SENT
+[I] client: connecting (SYN sent)
+[D] arp learn 167772161 -> 5e:85:69:b2:bd:3e
+[D] tcp <<< 10.0.0.1:7000 -> :40000 flags=SA seq=2563229073 ack=2641066921 len=0
+[D] tcp >>> :40000 -> 10.0.0.1:7000 flags=A seq=2641066921 ack=2563229074 len=0 state=ESTABLISHED
+[I] client: connected -> 10.0.0.1:7000 (lport=40000)
+[D] tcp >>> :40000 -> 10.0.0.1:7000 flags=AP seq=2641066921 ack=2563229074 len=5 state=ESTABLISHED
+[D] tcp <<< 10.0.0.1:7000 -> :40000 flags=A seq=2563229074 ack=2641066926 len=0
+[D] tcp <<< 10.0.0.1:7000 -> :40000 flags=A seq=2563229074 ack=2641066926 len=11
+client recv 11 bytes: REPLY:PING
+
+[D] tcp >>> :40000 -> 10.0.0.1:7000 flags=AF seq=2641066926 ack=2563229085 len=0 state=FIN_WAIT1
+[D] tcp >>> :40000 -> 10.0.0.1:7000 flags=A seq=2641066927 ack=2563229085 len=0 state=FIN_WAIT1
+[D] tcp <<< 10.0.0.1:7000 -> :40000 flags=AF seq=2563229085 ack=2641066926 len=0
+[D] tcp >>> :40000 -> 10.0.0.1:7000 flags=A seq=2641066927 ack=2563229086 len=0 state=FIN_WAIT1
+[I] client: done
+[D] tcp <<< 10.0.0.1:7000 -> :40000 flags=A seq=2563229086 ack=2641066927 len=0
+[I] tcpip stack stopped.
