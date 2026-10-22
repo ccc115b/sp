@@ -2598,6 +2598,13 @@ fn cg_fn(p: &mut P, fi: i64, head: i64) {
         r0_wchd(58);
         r0_wchd2(fi);
         r0_wchd(32);
+        let mut nk = 0;
+        while nk < p.fs.ln[fi as usize] {
+            r0_wchd((*(p.src.add((p.fs.nm[fi as usize] + nk) as usize))) as i64);
+            nk += 1;
+        }
+        r0_wchd(32);
+        r0_wchd(32);
         r0_wchd2(p.fs.vst[fi as usize]);
         r0_wchd(32);
         r0_wchd2(p.fs.vn[fi as usize]);

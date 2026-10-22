@@ -1,0 +1,24 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>board0</title>
+<style>
+:root{color-scheme:dark;--bg:#14171c;--fg:#e6e8eb;--card:#1e232b;--ac:#3fb98a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px system-ui,sans-serif}
+main{display:grid;grid-template-columns:minmax(340px,1fr) minmax(340px,1fr);gap:16px;padding:16px;max-width:1100px;margin:auto}
+@media(max-width:760px){main{grid-template-columns:1fr}}
+section{background:var(--card);border-radius:10px;padding:14px}h2,h3{margin:0 0 10px;font-size:15px}
+svg{width:100%;background:#0d1014;border-radius:8px;cursor:pointer}[data-k]:hover rect{stroke:var(--ac);stroke-width:2}
+pre{background:#0d1014;padding:10px;border-radius:8px;overflow:auto;max-height:260px;margin:8px 0;font:12px ui-monospace,monospace;white-space:pre-wrap}
+button,select{background:#2b323c;color:var(--fg);border:1px solid #3a4350;border-radius:6px;padding:6px 10px;font:inherit}
+button:hover{border-color:var(--ac)}.row{display:flex;gap:8px;align-items:center;margin:6px 0;flex-wrap:wrap}
+input[type=range]{flex:1}label{margin-right:10px}#st{color:var(--ac)}
+</style>
+<main>
+<section><h2>虛擬開發板（點針腳插上／拔除元件）</h2>
+<div class="row" id="pal"><label><input type="radio" name="p" value="led" checked> LED（D 針腳）</label>
+<label><input type="radio" name="p" value="button"> 按鈕（D，按下=HIGH）</label>
+<label><input type="radio" name="p" value="pot"> 可變電阻（A 針腳）</label></div>
+<svg id="board" viewBox="0 0 440 200"></svg><div id="plugs"></div></section>
+<section><div class="row"><select id="ex"></select><button id="run">▶ 執行</button><button id="rst">⟲ 重置</button><span id="st"></span></div>
+<pre id="src"></pre><h3>序列埠監控</h3><pre id="ser"></pre></section>
+</main>
+<script type="module" src="main.js"></script>
